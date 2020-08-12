@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace fio {
+namespace qfio {
   std::optional<std::string> read(const std::filesystem::path &p);
   std::optional<std::vector<uint8_t>> readb(const std::filesystem::path &p);
   bool write(
@@ -31,7 +31,7 @@ namespace fio {
 };
 
 template<typename T>
-std::ofstream &fio::log_stream_f::operator<<(const T t) {
+std::ofstream &qfio::log_stream_f::operator<<(const T t) {
   ofs << t;
 
   return ofs;

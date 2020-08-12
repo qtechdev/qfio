@@ -9,7 +9,7 @@
 
 #include "qfio.hpp"
 
-std::optional<std::string> fio::read(const std::filesystem::path &p) {
+std::optional<std::string> qfio::read(const std::filesystem::path &p) {
   std::ifstream ifs(p);
 
   if (ifs) {
@@ -27,7 +27,7 @@ std::optional<std::string> fio::read(const std::filesystem::path &p) {
   return {};
 }
 
-std::optional<std::vector<uint8_t>> fio::readb(const std::filesystem::path &p) {
+std::optional<std::vector<uint8_t>> qfio::readb(const std::filesystem::path &p) {
   std::ifstream ifs(p, std::ios::binary);
 
   if (ifs) {
@@ -46,7 +46,7 @@ std::optional<std::vector<uint8_t>> fio::readb(const std::filesystem::path &p) {
   return {};
 }
 
-bool fio::write(
+bool qfio::write(
   const std::filesystem::path &p, const std::string &data, const bool trunc
 ) {
   std::ofstream ofs;
@@ -66,7 +66,7 @@ bool fio::write(
   return false;
 }
 
-bool fio::write(
+bool qfio::write(
   const std::filesystem::path &p, const std::vector<uint8_t> &data,
   const bool trunc
 ) {
@@ -87,7 +87,7 @@ bool fio::write(
   return false;
 }
 
-fio::log_stream_f::log_stream_f(const std::string &s, const bool no_buf) {
+qfio::log_stream_f::log_stream_f(const std::string &s, const bool no_buf) {
   if (no_buf) { ofs.rdbuf()->pubsetbuf(0, 0); }
   ofs.open(s, std::ios::out | std::ios::app);
 
