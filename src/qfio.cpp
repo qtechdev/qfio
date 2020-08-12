@@ -1,11 +1,5 @@
-#include <cstdint>
-#include <cstdlib>
-#include <filesystem>
 #include <fstream>
-#include <iostream>
-#include <optional>
-#include <string>
-#include <vector>
+// #include <iostream>
 
 #include "qfio.hpp"
 
@@ -87,12 +81,21 @@ bool qfio::write(
   return false;
 }
 
-qfio::log_stream_f::log_stream_f(const std::string &s, const bool no_buf) {
-  if (no_buf) { ofs.rdbuf()->pubsetbuf(0, 0); }
-  ofs.open(s, std::ios::out | std::ios::app);
+std::vector<std::filesystem::path> qfio::get_files_in_directory(
+  const std::filesystem::path &directory) {
+  std::vector<std::filesystem::path> files;
 
-  auto now = std::chrono::system_clock::now();
-  std::time_t time = std::chrono::system_clock::to_time_t(now);
-  ofs << std::string(79, '=') << "\n";
-  ofs << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S") << "\n";
+  if (std::filesystem::is_directory(directory)) {
+    for (const auto &entry : std::filesystem::directory_iterator(directory)) {
+      if (std::filesystem::is_regular_file(entry.path())) {
+        files.push_back(entry.path());
+      } else if (std::filesystem::is_directory(entry.path())){
+        for (const auto &file : get_files_in_directory(entry.path())) {
+          files.push_back(file);
+        }
+      }
+    }
+  }
+
+  return files;
 }
