@@ -19,8 +19,10 @@ namespace qfio {
     const bool trunc=false
   );
 
+  // equivalent to `find <directory> -type f -maxdepth <maxdepth>
+  // set `maxdepth` to -1 for no limit
   std::vector<std::filesystem::path> get_files_in_directory(
-    const std::filesystem::path &directory
+    const std::filesystem::path &directory, int maxdepth=1
   );
 }
 

@@ -82,15 +82,18 @@ bool qfio::write(
 }
 
 std::vector<std::filesystem::path> qfio::get_files_in_directory(
-  const std::filesystem::path &directory) {
+  const std::filesystem::path &directory, int maxdepth
+) {
   std::vector<std::filesystem::path> files;
+
+  if (maxdepth > 0) { --maxdepth; }
 
   if (std::filesystem::is_directory(directory)) {
     for (const auto &entry : std::filesystem::directory_iterator(directory)) {
       if (std::filesystem::is_regular_file(entry.path())) {
         files.push_back(entry.path());
-      } else if (std::filesystem::is_directory(entry.path())){
-        for (const auto &file : get_files_in_directory(entry.path())) {
+      } else if (maxdepth != 0 && std::filesystem::is_directory(entry.path())){
+        for (const auto &file : get_files_in_directory(entry.path(), maxdepth)) {
           files.push_back(file);
         }
       }
