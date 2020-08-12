@@ -2,7 +2,7 @@
 #define __FILE_IO_HPP__
 
 #include <cstdint>
-#include <fstream>
+#include <iosfwd>
 #include <filesystem>
 #include <optional>
 #include <string>
@@ -28,7 +28,7 @@ namespace qfio {
   private:
     std::ofstream ofs;
   };
-};
+}
 
 template<typename T>
 std::ofstream &qfio::log_stream_f::operator<<(const T t) {

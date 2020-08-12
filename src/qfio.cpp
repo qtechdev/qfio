@@ -31,9 +31,9 @@ std::optional<std::vector<uint8_t>> qfio::readb(const std::filesystem::path &p) 
   std::ifstream ifs(p, std::ios::binary);
 
   if (ifs) {
-    ifs.seekg(0, std::ios::end);
-    std::size_t filesize = ifs.tellg();
-    ifs.seekg(0, std::ios::beg);
+    // ifs.seekg(0, std::ios::end);
+    // std::size_t filesize = ifs.tellg();
+    // ifs.seekg(0, std::ios::beg);
 
     std::vector<uint8_t> data(
       (std::istreambuf_iterator<char>(ifs)),
