@@ -1,15 +1,9 @@
-#include <cstdint>
-#include <cstdlib>
-#include <filesystem>
 #include <fstream>
-#include <iostream>
-#include <optional>
-#include <string>
-#include <vector>
+// #include <iostream>
 
 #include "qfio.hpp"
 
-std::optional<std::string> fio::read(const std::filesystem::path &p) {
+std::optional<std::string> qfio::read(const std::filesystem::path &p) {
   std::ifstream ifs(p);
 
   if (ifs) {
@@ -27,13 +21,13 @@ std::optional<std::string> fio::read(const std::filesystem::path &p) {
   return {};
 }
 
-std::optional<std::vector<uint8_t>> fio::readb(const std::filesystem::path &p) {
+std::optional<std::vector<uint8_t>> qfio::readb(const std::filesystem::path &p) {
   std::ifstream ifs(p, std::ios::binary);
 
   if (ifs) {
-    ifs.seekg(0, std::ios::end);
-    std::size_t filesize = ifs.tellg();
-    ifs.seekg(0, std::ios::beg);
+    // ifs.seekg(0, std::ios::end);
+    // std::size_t filesize = ifs.tellg();
+    // ifs.seekg(0, std::ios::beg);
 
     std::vector<uint8_t> data(
       (std::istreambuf_iterator<char>(ifs)),
@@ -46,7 +40,7 @@ std::optional<std::vector<uint8_t>> fio::readb(const std::filesystem::path &p) {
   return {};
 }
 
-bool fio::write(
+bool qfio::write(
   const std::filesystem::path &p, const std::string &data, const bool trunc
 ) {
   std::ofstream ofs;
@@ -66,7 +60,7 @@ bool fio::write(
   return false;
 }
 
-bool fio::write(
+bool qfio::write(
   const std::filesystem::path &p, const std::vector<uint8_t> &data,
   const bool trunc
 ) {
@@ -87,12 +81,24 @@ bool fio::write(
   return false;
 }
 
-fio::log_stream_f::log_stream_f(const std::string &s, const bool no_buf) {
-  if (no_buf) { ofs.rdbuf()->pubsetbuf(0, 0); }
-  ofs.open(s, std::ios::out | std::ios::app);
+std::vector<std::filesystem::path> qfio::get_files_in_directory(
+  const std::filesystem::path &directory, int maxdepth
+) {
+  std::vector<std::filesystem::path> files;
 
-  auto now = std::chrono::system_clock::now();
-  std::time_t time = std::chrono::system_clock::to_time_t(now);
-  ofs << std::string(79, '=') << "\n";
-  ofs << std::put_time(std::localtime(&time), "%Y-%m-%d %H:%M:%S") << "\n";
+  if (maxdepth > 0) { --maxdepth; }
+
+  if (std::filesystem::is_directory(directory)) {
+    for (const auto &entry : std::filesystem::directory_iterator(directory)) {
+      if (std::filesystem::is_regular_file(entry.path())) {
+        files.push_back(entry.path());
+      } else if (maxdepth != 0 && std::filesystem::is_directory(entry.path())){
+        for (const auto &file : get_files_in_directory(entry.path(), maxdepth)) {
+          files.push_back(file);
+        }
+      }
+    }
+  }
+
+  return files;
 }
