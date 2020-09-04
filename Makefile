@@ -1,5 +1,5 @@
 NAME=qfio
-V_MAJOR=0
+V_MAJOR=1
 V_MINOR=0
 V_MICRO=0
 LIB_NAME=lib${NAME}.so
